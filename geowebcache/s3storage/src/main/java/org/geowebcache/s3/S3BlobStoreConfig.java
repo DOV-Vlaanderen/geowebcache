@@ -37,6 +37,7 @@ import com.amazonaws.Protocol;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 
 /**
@@ -75,6 +76,8 @@ public class S3BlobStoreConfig extends BlobStoreConfig {
     private String proxyPassword;
 
     private Boolean useGzip;
+    
+    private String endpoint;
 
     
     public S3BlobStoreConfig() {
@@ -97,6 +100,20 @@ public class S3BlobStoreConfig extends BlobStoreConfig {
      */
     public void setBucket(String bucket) {
         this.bucket = bucket;
+    }
+    
+    /**
+     * @return the host of the S3-compatible server (if not AWS)
+     */
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    /**
+     * Sets the host of the S3-compatible server (if not AWS)
+     */
+    public void setEndpoint(String host) {
+        this.endpoint = host;
     }
 
     /**
@@ -383,7 +400,11 @@ public class S3BlobStoreConfig extends BlobStoreConfig {
             clientConfig.setUseGzip(useGzip);
         }
         log.debug("Initializing AWS S3 connection");
-        return new AmazonS3Client(awsCredentials, clientConfig);
+        AmazonS3Client client = new AmazonS3Client(awsCredentials, clientConfig);
+        if (endpoint != null && !"".equals(endpoint)) {
+            client.setEndpoint(endpoint);
+        }
+        return client;
     }
 
 }
