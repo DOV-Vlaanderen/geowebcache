@@ -5,7 +5,7 @@
   <groupId>org.geowebcache</groupId>
   <artifactId>geowebcache</artifactId>
   <packaging>pom</packaging>
-  <version>1.12.2</version><!-- GWC VERSION -->
+  <version>1.12.2-dov-0.1-SNAPSHOT</version><!-- GWC VERSION -->
   <name>geowebcache</name>
   <url>http://geowebcache.org</url>
 
