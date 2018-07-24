@@ -36,6 +36,12 @@
     <imageio-ext.version>1.1.18</imageio-ext.version>
     <hazelcast.version>2.3.1</hazelcast.version>
     <joda-time.version>2.8.1</joda-time.version>
+    <acd.issueManagement.url>https://www.milieuinfo.be/jira</acd.issueManagement.url>
+    <acd.ciManagement.system>Bamboo</acd.ciManagement.system>
+    <acd.ciManagement.url>https://www.milieuinfo.be/bamboo</acd.ciManagement.url>
+    <acd.repository.url>https://www.milieuinfo.be/artifactory</acd.repository.url>
+    <acd.repository.snapshot.url>${acd.repository.url}/snapshot</acd.repository.snapshot.url>
+    <acd.repository.release.url>${acd.repository.url}/release</acd.repository.release.url>
   </properties>
   
   <repositories>
@@ -65,20 +71,17 @@
     </repository>
   </repositories>
  
-  <distributionManagement>
-    <repository>
-      <id>boundless</id>
-      <name>Boundless</name>
-      <url>https://repo.boundlessgeo.com/release/</url>
-      <uniqueVersion>false</uniqueVersion>
-    </repository>
-    <snapshotRepository>
-      <id>boundless</id>
-      <uniqueVersion>false</uniqueVersion>
-      <name>Boundless Maven Repository</name>
-      <url>https://repo.boundlessgeo.com/snapshot/</url>
-     </snapshotRepository>
-  </distributionManagement>
+
+ <distributionManagement>
+  <repository>
+  <id>release</id>
+  <url>${acd.repository.release.url}</url>
+  </repository>
+  <snapshotRepository>
+  <id>snapshot</id>
+  <url>${acd.repository.snapshot.url}</url>
+  </snapshotRepository>
+ </distributionManagement>
 
  <dependencyManagement>
   <dependencies>
@@ -594,6 +597,28 @@
     </pluginManagement>
   </build>
   
+  <profiles>
+    <profile>
+      <id>bamboo</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>com.github.eirslett</groupId>
+              <artifactId>frontend-maven-plugin</artifactId>
+              <configuration>
+                <environmentVariables>
+                  <https_proxy>http://forwardproxy-pr-build.lb.cumuli.be:3128/</https_proxy>
+                  <http_proxy>http://forwardproxy-pr-build.lb.cumuli.be:3128/</http_proxy>
+                  <no_proxy>cumuli.be,mmis.be,localhost</no_proxy>
+                </environmentVariables>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
 
   <modules>
     <module>core</module>
