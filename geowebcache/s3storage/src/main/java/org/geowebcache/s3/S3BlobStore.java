@@ -95,8 +95,8 @@ public class S3BlobStore implements BlobStore {
             LockProvider lockProvider) throws StorageException {
         checkNotNull(config);
         checkNotNull(layers);
-        checkNotNull(config.getAwsAccessKey(), "Access key not provided");
-        checkNotNull(config.getAwsSecretKey(), "Secret key not provided");
+        //checkNotNull(config.getAwsAccessKey(), "Access key not provided");
+        //checkNotNull(config.getAwsSecretKey(), "Secret key not provided");
 
         this.bucketName = config.getBucket();
         String prefix = config.getPrefix() == null ? "" : config.getPrefix();

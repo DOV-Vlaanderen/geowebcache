@@ -35,10 +35,12 @@ import org.geowebcache.storage.StorageException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AnonymousAWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.google.common.base.Strings;
 
 /**
  * Plain old java object representing the configuration for an S3 blob store.
@@ -380,7 +382,12 @@ public class S3BlobStoreConfig extends BlobStoreConfig {
      * @return {@link AmazonS3Client} constructed from this {@link S3BlobStoreConfig}.
      */
     public AmazonS3Client buildClient() {
-        AWSCredentials awsCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
+        AWSCredentials awsCredentials;
+        if (Strings.isNullOrEmpty(awsAccessKey)) {
+            awsCredentials = new AnonymousAWSCredentials();
+        } else {
+            awsCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
+        }
         ClientConfiguration clientConfig = new ClientConfiguration();
         if (null != useHTTPS) {
             clientConfig.setProtocol(useHTTPS ? Protocol.HTTPS : Protocol.HTTP);
@@ -402,7 +409,13 @@ public class S3BlobStoreConfig extends BlobStoreConfig {
         log.debug("Initializing AWS S3 connection");
         AmazonS3Client client = new AmazonS3Client(awsCredentials, clientConfig);
         if (endpoint != null && !"".equals(endpoint)) {
+            S3ClientOptions s3ClientOptions = new S3ClientOptions();
+            s3ClientOptions.setPathStyleAccess(true);
+            client.setS3ClientOptions(s3ClientOptions);
             client.setEndpoint(endpoint);
+        }
+        if(!client.doesBucketExist(bucket)) {
+            client.createBucket(bucket);
         }
         return client;
     }

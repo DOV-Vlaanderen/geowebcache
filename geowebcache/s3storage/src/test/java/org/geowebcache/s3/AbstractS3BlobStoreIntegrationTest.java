@@ -56,9 +56,7 @@ import org.geowebcache.storage.StorageException;
 import org.geowebcache.storage.TileObject;
 import org.geowebcache.storage.TileRange;
 import org.junit.After;
-import org.junit.Assume;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -70,10 +68,9 @@ import com.google.common.io.Files;
 /**
  * Integration tests for {@link S3BlobStore}.
  * <p>
- * For the tests to be run, a properties file {@code $HOME/.gwc_s3_tests.properties} must exist and
- * contain entries for {@code bucket}, {@code accessKey}, and {@code secretKey}.
+ * This is an abstract class for both online and offline integration tests.
  */
-public class S3BlobStoreIntegrationTest {
+public abstract class AbstractS3BlobStoreIntegrationTest {
 
     private static Log log = LogFactory.getLog(PropertiesLoader.class);
 
@@ -85,16 +82,14 @@ public class S3BlobStoreIntegrationTest {
 
     public PropertiesLoader testConfigLoader = new PropertiesLoader();
 
-    @Rule
-    public TemporaryS3Folder tempFolder = new TemporaryS3Folder(testConfigLoader.getProperties());
-
     private S3BlobStore blobStore;
+    
+    protected abstract S3BlobStoreConfig getConfiguration();
 
     @Before
     public void before() throws Exception {
-        Assume.assumeTrue(tempFolder.isConfigured());
-        S3BlobStoreConfig config = tempFolder.getConfig();
-
+        S3BlobStoreConfig config = getConfiguration();
+        
         TileLayerDispatcher layers = mock(TileLayerDispatcher.class);
         LockProvider lockProvider = new NoOpLockProvider();
         TileLayer layer = mock(TileLayer.class);
