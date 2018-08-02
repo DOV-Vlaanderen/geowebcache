@@ -31,6 +31,7 @@ import org.geowebcache.mime.MimeType;
 import org.geowebcache.storage.TileObject;
 import org.geowebcache.storage.TileRange;
 
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 final class TMSKeyBuilder {
@@ -39,41 +40,41 @@ final class TMSKeyBuilder {
      * Key format, comprised of
      * {@code <prefix>/<layer name>/<gridset id>/<format id>/<parameters hash>/<z>/<x>/<y>.<extension>}
      */
-    private static final String TILE_FORMAT = "%s/%s/%s/%s/%s/%d/%d/%d.%s";
+    private static final String TILE_FORMAT = "%s%s/%s/%s/%s/%d/%d/%d.%s";
 
     /**
      * Coordinates prefix: {@code <prefix>/<layer name>/<gridset id>/<format id>/<parameters hash>/}
      */
-    private static final String COORDINATES_PREFIX_FORMAT = "%s/%s/%s/%s/%s/";
+    private static final String COORDINATES_PREFIX_FORMAT = "%s%s/%s/%s/%s/";
 
     /**
      * Layer prefix format, comprised of {@code <prefix>/<layer name>/}
      */
-    private static final String LAYER_PREFIX_FORMAT = "%s/%s/";
+    private static final String LAYER_PREFIX_FORMAT = "%s%s/";
 
     /**
      * layer + gridset prefix format, comprised of {@code <prefix>/<layer name>/<gridset id>/}
      */
-    private static final String GRIDSET_PREFIX_FORMAT = "%s/%s/%s/";
+    private static final String GRIDSET_PREFIX_FORMAT = "%s%s/%s/";
 
     public static final String LAYER_METADATA_OBJECT_NAME = "metadata.properties";
     public static final String PARAMETERS_METADATA_OBJECT_PREFIX = "parameters-";
     public static final String PARAMETERS_METADATA_OBJECT_NAME = 
             PARAMETERS_METADATA_OBJECT_PREFIX+"%s.properties";
 
-    private static final String LAYER_METADATA_FORMAT = "%s/%s/" + 
+    private static final String LAYER_METADATA_FORMAT = "%s%s/" + 
             LAYER_METADATA_OBJECT_NAME;
-    private static final String PARAMETERS_METADATA_FORMAT = "%s/%s/" + 
+    private static final String PARAMETERS_METADATA_FORMAT = "%s%s/" + 
             PARAMETERS_METADATA_OBJECT_NAME;
     private static final String PARAMETERS_METADATA_PREFIX_FORMAT = 
-            "%s/%s/" + PARAMETERS_METADATA_OBJECT_PREFIX;
+            "%s%s/" + PARAMETERS_METADATA_OBJECT_PREFIX;
 
     private String prefix;
 
     private TileLayerDispatcher layers;
 
     public TMSKeyBuilder(final String prefix, TileLayerDispatcher layers) {
-        this.prefix = prefix;
+        this.prefix = Strings.isNullOrEmpty(prefix) ? "" : prefix + "/";
         this.layers = layers;
     }
 

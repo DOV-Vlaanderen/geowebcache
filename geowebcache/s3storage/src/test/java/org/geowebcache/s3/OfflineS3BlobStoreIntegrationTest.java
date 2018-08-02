@@ -17,21 +17,13 @@ package org.geowebcache.s3;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 
 import io.findify.s3mock.S3Mock;
 
 /**
  * Offline integration tests for {@link S3BlobStore}.
  * <p>
- * This test class is currently disabled because gwc is affect by this bug in the 
- * S3Mock library: https://github.com/findify/s3mock/issues/75
- * which makes some of the tests fail.
- * 
- * A patch for this bug is currently under review, and as soon as it has been merged
- * and released, the dependency version can be upgraded and this test can be enabled.
  */
-@Ignore
 public class OfflineS3BlobStoreIntegrationTest extends AbstractS3BlobStoreIntegrationTest {
 
     private static S3Mock api;
@@ -50,7 +42,7 @@ public class OfflineS3BlobStoreIntegrationTest extends AbstractS3BlobStoreIntegr
     protected S3BlobStoreConfig getConfiguration() {
         S3BlobStoreConfig config = new S3BlobStoreConfig();
         config.setEndpoint("http://localhost:8001");
-        config.setBucket("testbucket");        
+        config.setBucket("testbucket");
         return config;
     }
 }
